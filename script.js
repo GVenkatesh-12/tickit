@@ -7,20 +7,25 @@ const addTodoBtn = document.querySelector('.js-add-todo-btn');
 // Get the todo checkbox
 const todoCheckbox = document.querySelector('.js-todo-checkbox');
 
-//create dummy todo list
-let todoList = [];
-
-let completedTodoList = [];
+// Initialize todo lists from localStorage or empty arrays
+let todoList = JSON.parse(localStorage.getItem('todoList')) || [];
+let completedTodoList = JSON.parse(localStorage.getItem('completedTodoList')) || [];
 
 // -------------------- Functions --------------------
 
+function saveToLocalStorage() {
+    localStorage.setItem('todoList', JSON.stringify(todoList));
+    localStorage.setItem('completedTodoList', JSON.stringify(completedTodoList));
+}
+
 function addTodo() {
     const todo = {
-        id: todoList.length + 1,
+        id: Date.now(), // Use timestamp as unique ID
         text: todoInput.value,
         completed: false
     };
     todoList.push(todo);
+    saveToLocalStorage();
     renderTodoList();
 }
 
@@ -51,6 +56,8 @@ function attachDeleteButtonListeners() {
         button.addEventListener('click', () => {
             const id = parseInt(button.dataset.id);
             todoList = todoList.filter(todo => todo.id !== id);
+            completedTodoList = completedTodoList.filter(todo => todo.id !== id);
+            saveToLocalStorage();
             renderTodoList();
             renderCompletedTodoList();
         });
@@ -64,15 +71,16 @@ function attachCheckboxListeners() {
             todoList.forEach(todo => {
                 if (todo.id === id) {
                     todo.completed = !todo.completed;
-                    completedTodoList.push(todo);
-                    //delete from todo list if completed
                     if (todo.completed) {
-                        todoList = todoList.filter(todo => todo.id !== id);
+                        completedTodoList.push(todo);
+                        todoList = todoList.filter(t => t.id !== id);
                     } else {
                         todoList.push(todo);
+                        completedTodoList = completedTodoList.filter(t => t.id !== id);
                     }
                 }
             });
+            saveToLocalStorage();
             renderTodoList();
             renderCompletedTodoList();
         });
@@ -116,6 +124,13 @@ renderCompletedTodoList();
 attachDeleteButtonListeners();
 attachCheckboxListeners();
 
-
+//clear local storage
+document.querySelector('.js-reset-btn').addEventListener('click', () => {
+    localStorage.clear();
+    todoList = [];
+    completedTodoList = [];
+    renderTodoList();
+    renderCompletedTodoList();
+});
 
 
