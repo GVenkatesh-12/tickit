@@ -24,6 +24,14 @@ function addTodo() {
         text: todoInput.value,
         completed: false
     };
+    if (todo.text.trim() === '') {
+        todoInput.setAttribute('placeholder', 'why?');
+        setTimeout(() => {
+            todoInput.setAttribute('placeholder', 'Add a new todo');
+        }, 1000);
+        todoInput.focus();
+        return;
+    }
     todoList.push(todo);
     saveToLocalStorage();
     renderTodoList();
@@ -134,3 +142,4 @@ document.querySelector('.js-reset-btn').addEventListener('click', () => {
 });
 
 
+document.querySelector('.js-completed-todo-list').innerHTML = `<p class="text-lg font-bold text-green-800">Action creates momentum.</p>`;
