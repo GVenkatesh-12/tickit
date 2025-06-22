@@ -124,6 +124,9 @@ function renderCompletedTodoList() {
     });
 
     document.querySelector('.js-completed-todo-list').innerHTML = completedTodoListHTML;
+    if( completedTodoList.length === 0) {
+        document.querySelector('.js-completed-todo-list').innerHTML = '<p class="text-lg font-bold text-green-800">Action creates momentum.</p>';
+    }
 }
 
 // Initial setup
@@ -141,5 +144,3 @@ document.querySelector('.js-reset-btn').addEventListener('click', () => {
     renderCompletedTodoList();
 });
 
-
-document.querySelector('.js-completed-todo-list').innerHTML = `<p class="text-lg font-bold text-green-800">Action creates momentum.</p>`;
